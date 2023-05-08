@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/styles.css">
+    <title>Page</title>
+</head>
+<body>
+    <nav id="navbar">
+      <a href="" class="nav-brand">Url Shortner App</a>
+      <ul>
+        <li class="nav-item"><a href="about.html">About us</a></li>
+        <li><a href="" class="nav-item btn btn-default">Register</a></li>
+      </ul>
+    </nav>
+
+    <div class="container" id="main">
+        <h1>Welcome to our Class URL Shortner</h1>
+
+
+        <form id="conversion-form" novalidate>
+            <label for="amount">Url</label>
+            <input id="url" type="text" placeholder="Enter your url">
+            <br />
+            <label for="amount">Result: </label>
+             <p id="url_response"></p>
+            <div>
+               <input type="submit" value="Shorten Url" id="url-shorten-btn" class="btn btn-default">
+            </div>
+
+            <p id="src"></p>
+        </form>
+    </div>
+
+    <footer id="footer-wrapper">
+        <a href="about.html" target="_blank">About us</a>
+        <a href="contact.html" target="_blank">Contact us</a>
+    </footer>
+
+
+    <script>
+
+        const submitForm = document.querySelector('#conversion-form')
+        const inputFrm = document.querySelector('#url')
+        const pId = document.querySelector('#url_response')
+        const inputType = document.querySelector('#url-shorten-btn')
+        const pIdTwo = document.querySelector('#src')
+
+
+        submitForm.addEventListener("submit", (event)=>{
+            event.preventDefault()
+            console.log('anything')
+            const inputFormValue = inputFrm.value
+            console.log(inputFormValue)
+            fetch(`https://api.shrtco.de/v2/shorten?url=${inputFormValue}`)
+            .then(response => response.json())
+            .then(res =>  document.querySelector('#url_response').textContent = res.result.short_link)
+            .catch(error => console.log(error))
+        })
+
+    </script>
+ 
+</body>
+
+<script>
+
+   const urlShortnerBtn =  document.querySelector('#conversion-form')
+
+   urlShortnerBtn.addEventListener('submit', (event)=> {
+        event.preventDefault()
+        document.querySelector('#url-shorten-btn').value = 'Loading...'
+        const inputUrl = document.querySelector('#url').value
+        if(inputUrl === '' || inputUrl.indexOf('.') === -1){
+            alert('Please enter a url')
+        }
+
+        fetch(`https://api.shrtco.de/v2/shorten?url=${inputUrl}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("issue: ", data.ok)
+            if(!data.ok){
+                alert(data.error)
+                document.querySelector('#url_response').textContent = data.error
+            }else{
+              document.querySelector('#url-shorten-btn').value = 'Submit'
+             document.querySelector('#url_response').textContent = data.result.short_link
+            }
+        })
+        .catch(error => {
+            console.log("error")
+        })
+
+       
+   })
+
+</script>
+
+
+</html>
+
+<!-- https://shrtco.de/docs -->
